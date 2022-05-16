@@ -8,7 +8,7 @@
 npx create-react-native-app --template https://github.com/deniandreawan/rn-presence
 ```
 
-2. Rename the file `example.env` to `.env`
+2. Rename the file `.env.example` to `.env`
 3. Update `.env` with your own configuration, e.g.:
 
 ```shell
