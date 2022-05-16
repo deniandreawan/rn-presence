@@ -2,23 +2,30 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Formik } from "formik";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 import { useTogglePasswordVisibility } from "../hooks/useTogglePasswordVisibility";
-import { loginValidationSchema } from "../utils/validateSchema";
+import { signupValidationSchema } from "../utils/validateSchema";
 import { auth } from "../config/firebase";
 import TextInput from "../components/TextInput";
 import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
 
-export default function LoginScreen({ navigation }) {
+export default function SignupScreen() {
   const [errorState, setErrorState] = useState("");
-  const { passwordVisibility, handlePasswordVisibility, rightIcon } =
-    useTogglePasswordVisibility();
+  const {
+    passwordVisibility,
+    handlePasswordVisibility,
+    rightIcon,
+    handleConfirmPasswordVisibility,
+    confirmPasswordIcon,
+    confirmPasswordVisibility,
+  } = useTogglePasswordVisibility();
 
-  const handleLogin = (values) => {
+  const handleSignup = (values) => {
     const { email, password } = values;
-    signInWithEmailAndPassword(auth, email, password).catch((error) =>
+
+    createUserWithEmailAndPassword(auth, email, password).catch((error) =>
       setErrorState(error.message)
     );
   };
@@ -31,9 +38,10 @@ export default function LoginScreen({ navigation }) {
             initialValues={{
               email: "",
               password: "",
+              confirmPassword: "",
             }}
-            validationSchema={loginValidationSchema}
-            onSubmit={(values) => handleLogin(values)}
+            validationSchema={signupValidationSchema}
+            onSubmit={(values) => handleSignup(values)}
           >
             {({
               values,
@@ -46,7 +54,7 @@ export default function LoginScreen({ navigation }) {
               <>
                 <TextInput
                   name="email"
-                  placeholder="Email"
+                  placeholder="Enter Email"
                   autoCapitalize="none"
                   keyboardType="email-address"
                   autoFocus={true}
@@ -57,7 +65,7 @@ export default function LoginScreen({ navigation }) {
                 <ErrorMessage error={errors.email} visible={touched.email} />
                 <TextInput
                   name="password"
-                  placeholder="Password"
+                  placeholder="Enter Password"
                   autoCapitalize="none"
                   autoCorrect={false}
                   secureTextEntry={passwordVisibility}
@@ -71,23 +79,33 @@ export default function LoginScreen({ navigation }) {
                   error={errors.password}
                   visible={touched.password}
                 />
+                <TextInput
+                  name="confirmPassword"
+                  placeholder="Confirm Password"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  secureTextEntry={confirmPasswordVisibility}
+                  rightIcon={confirmPasswordIcon}
+                  handlePasswordVisibility={handleConfirmPasswordVisibility}
+                  value={values.confirmPassword}
+                  onChangeText={handleChange("confirmPassword")}
+                  onBlur={handleBlur("confirmPassword")}
+                />
+                <ErrorMessage
+                  error={errors.confirmPassword}
+                  visible={touched.confirmPassword}
+                />
                 {/* Display Screen Error Mesages */}
                 {errorState !== "" ? (
                   <ErrorMessage error={errorState} visible={true} />
                 ) : null}
                 <Button style={styles.button} onPress={handleSubmit}>
-                  <Text style={styles.buttonText}>Login</Text>
+                  <Text style={styles.buttonText}>Signup</Text>
                 </Button>
               </>
             )}
           </Formik>
         </View>
-        <Button
-          style={styles.borderlessButtonContainer}
-          borderless
-          title={"Create a new account?"}
-          onPress={() => navigation.navigate("Signup")}
-        />
       </KeyboardAwareScrollView>
     </View>
   );
