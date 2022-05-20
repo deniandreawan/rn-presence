@@ -1,27 +1,19 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Formik } from "formik";
-import { signInWithEmailAndPassword } from "firebase/auth";
 
+import { AuthContext } from "../providers/AuthProvider";
 import { useTogglePasswordVisibility } from "../hooks/useTogglePasswordVisibility";
 import { loginValidationSchema } from "../utils/validateSchema";
-import { auth } from "../config/firebase";
 import TextInput from "../components/TextInput";
 import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
 
 export default function LoginScreen({ navigation }) {
-  const [errorState, setErrorState] = useState("");
+  const { handleLogin, errorState } = useContext(AuthContext);
   const { passwordVisibility, handlePasswordVisibility, rightIcon } =
     useTogglePasswordVisibility();
-
-  const handleLogin = (values) => {
-    const { email, password } = values;
-    signInWithEmailAndPassword(auth, email, password).catch((error) =>
-      setErrorState(error.message)
-    );
-  };
 
   return (
     <View style={styles.container}>

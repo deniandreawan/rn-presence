@@ -1,5 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import Constants from "expo-constants";
 
 // add firebase config
@@ -18,4 +24,10 @@ initializeApp(firebaseConfig);
 // initialize auth
 const auth = getAuth();
 
-export { auth };
+export {
+  auth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+};

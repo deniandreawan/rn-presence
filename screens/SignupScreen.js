@@ -1,18 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Formik } from "formik";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 
+import { AuthContext } from "../providers/AuthProvider";
 import { useTogglePasswordVisibility } from "../hooks/useTogglePasswordVisibility";
 import { signupValidationSchema } from "../utils/validateSchema";
-import { auth } from "../config/firebase";
 import TextInput from "../components/TextInput";
 import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
 
 export default function SignupScreen() {
-  const [errorState, setErrorState] = useState("");
+  const { handleSignup, errorState } = useContext(AuthContext);
   const {
     passwordVisibility,
     handlePasswordVisibility,
@@ -21,14 +20,6 @@ export default function SignupScreen() {
     confirmPasswordIcon,
     confirmPasswordVisibility,
   } = useTogglePasswordVisibility();
-
-  const handleSignup = (values) => {
-    const { email, password } = values;
-
-    createUserWithEmailAndPassword(auth, email, password).catch((error) =>
-      setErrorState(error.message)
-    );
-  };
 
   return (
     <View style={styles.container}>

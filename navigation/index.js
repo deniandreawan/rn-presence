@@ -3,10 +3,8 @@ import { FontAwesome } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { onAuthStateChanged } from "firebase/auth";
 
 import { AuthContext } from "../providers/AuthProvider";
-import { auth } from "../config/firebase";
 import LoginScreen from "../screens/LoginScreen";
 import SignupScreen from "../screens/SignupScreen";
 import TabOneScreen from "../screens/TabOneScreen";
@@ -79,22 +77,7 @@ function RootNavigator() {
 }
 
 export default function Navigation() {
-  const { user, setUser } = React.useContext(AuthContext);
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    // onAuthStateChanged returns an unsubscriber
-    const unsubscribeAuthStateChanged = onAuthStateChanged(
-      auth,
-      (authenticatedUser) => {
-        authenticatedUser ? setUser(authenticatedUser) : setUser(null);
-        setIsLoading(false);
-      }
-    );
-
-    // unsubscribe auth listener on unmount
-    return unsubscribeAuthStateChanged;
-  }, [user]);
+  const { isAuth, isLoading } = React.useContext(AuthContext);
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -102,7 +85,7 @@ export default function Navigation() {
 
   return (
     <NavigationContainer>
-      {user ? <RootNavigator /> : <AuthNavigator />}
+      {isAuth ? <RootNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

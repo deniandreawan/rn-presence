@@ -1,13 +1,11 @@
+import React, { useContext } from "react";
 import { StyleSheet, View } from "react-native";
-import { signOut } from "firebase/auth";
 
-import { auth } from "../config/firebase";
+import { AuthContext } from "../providers/AuthProvider";
 import Button from "../components/Button";
 
 export default function TabOneScreen() {
-  const handleSignOut = () => {
-    signOut(auth).catch((error) => console.log("Error logging out: ", error));
-  };
+  const { handleSignOut } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
